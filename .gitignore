@@ -1,0 +1,21 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+instance/
+.env
+
+# Node
+node_modules/
+build/
+.env.local
+
+# C engine
+engine/*.exe
+engine/*.o
+
+# Misc
+.DS_Store
+*.log
+test_db.py
