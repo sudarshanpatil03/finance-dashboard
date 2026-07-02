@@ -1,32 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# ── Manual CORS — works with all flask-cors versions ──
-@app.after_request
-def add_cors_headers(response):
-    origin = request.headers.get('Origin', '')
-    if origin in ('http://localhost:3000', 'http://127.0.0.1:3000', 'https://finance-dash-sudarshan.web.app'):
-        response.headers['Access-Control-Allow-Origin']  = origin
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-    return response
-
-@app.before_request
-def handle_preflight():
-    if request.method == 'OPTIONS':
-        response = jsonify({'status': 'ok'})
-        origin = request.headers.get('Origin', '')
-        if origin in ('http://localhost:3000', 'http://127.0.0.1:3000', 'https://finance-dash-sudarshan.web.app'):
-            response.headers['Access-Control-Allow-Origin']  = origin
-            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-            response.headers['Access-Control-Allow-Credentials'] = 'true'
-        return response, 200
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000", "https://finance-dash-sudarshan.web.app"]}}, supports_credentials=True)
 
 from models import db
 db.init_app(app)
