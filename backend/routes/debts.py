@@ -104,8 +104,17 @@ def generate_payoff(current_user):
     })
 
     # Path to compiled C engine
-    engine_path = os.path.join(os.path.dirname(__file__), '..', '..', 'engine', 'payoff.exe')
-    engine_path = os.path.abspath(engine_path)
+    import platform
+    is_windows = platform.system() == 'Windows'
+    engine_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'engine'))
+    engine_path = os.path.join(engine_dir, 'payoff.exe' if is_windows else 'payoff')
+    
+    # Auto-compile on Linux (Render) if not exists
+    if not is_windows and not os.path.exists(engine_path):
+        c_source = os.path.join(engine_dir, 'payoff.c')
+        if os.path.exists(c_source):
+            print("Compiling C engine...")
+            subprocess.run(['gcc', c_source, '-o', engine_path, '-lm'], check=True)
 
     try:
         result = subprocess.run(
