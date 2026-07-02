@@ -9,7 +9,7 @@ app.config.from_object(Config)
 @app.after_request
 def add_cors_headers(response):
     origin = request.headers.get('Origin', '')
-    if origin in ('http://localhost:3000', 'http://127.0.0.1:3000'):
+    if origin in ('http://localhost:3000', 'http://127.0.0.1:3000', 'https://finance-dash-sudarshan.web.app'):
         response.headers['Access-Control-Allow-Origin']  = origin
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
@@ -21,7 +21,7 @@ def handle_preflight():
     if request.method == 'OPTIONS':
         response = jsonify({'status': 'ok'})
         origin = request.headers.get('Origin', '')
-        if origin in ('http://localhost:3000', 'http://127.0.0.1:3000'):
+        if origin in ('http://localhost:3000', 'http://127.0.0.1:3000', 'https://finance-dash-sudarshan.web.app'):
             response.headers['Access-Control-Allow-Origin']  = origin
             response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
             response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
