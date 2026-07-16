@@ -1,16 +1,17 @@
 import os
-import urllib.parse
 from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    user = os.getenv('DB_USER', '')
-    pwd  = os.getenv('DB_PASSWORD', '')
-    if pwd:
-        pwd = urllib.parse.quote_plus(pwd)
-    host = os.getenv('DB_HOST', '')
-    db   = os.getenv('DB_NAME', '')
+    # Neon/Render provide a full DATABASE_URL — use it directly if available
+    _db_url = os.getenv('DATABASE_URL', '')
 
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{user}:{pwd}@{host}/{db}"
+    # Neon connection strings start with "postgresql://", SQLAlchemy needs "postgresql+psycopg2://"
+    if _db_url.startswith('postgres://'):
+        _db_url = _db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
+    elif _db_url.startswith('postgresql://'):
+        _db_url = _db_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
+
+    SQLALCHEMY_DATABASE_URI = _db_url or 'sqlite:///finance_local.db'  # local fallback
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET = os.getenv('JWT_SECRET', 'fallback_secret')
