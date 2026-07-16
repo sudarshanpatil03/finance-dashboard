@@ -42,7 +42,7 @@ class Category(db.Model):
     id      = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     name    = db.Column(db.String(100), nullable=False)
-    type    = db.Column(db.Enum('income', 'expense'), nullable=False)
+    type    = db.Column(db.Enum('income', 'expense', name='category_type', native_enum=False), nullable=False)
 
     transactions = db.relationship('Transaction', backref='category', lazy=True)
     budgets      = db.relationship('Budget',      backref='category', lazy=True)
@@ -66,7 +66,7 @@ class Transaction(db.Model):
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
     amount      = db.Column(db.Numeric(10, 2), nullable=False)
-    type        = db.Column(db.Enum('income', 'expense'), nullable=False)
+    type        = db.Column(db.Enum('income', 'expense', name='transaction_type', native_enum=False), nullable=False)
     description = db.Column(db.String(255))
     date        = db.Column(db.Date, nullable=False)
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)
@@ -146,7 +146,7 @@ class PayoffPlan(db.Model):
 
     id              = db.Column(db.Integer, primary_key=True)
     user_id         = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    method          = db.Column(db.Enum('avalanche', 'snowball'), nullable=False)
+    method          = db.Column(db.Enum('avalanche', 'snowball', name='payoff_method', native_enum=False), nullable=False)
     extra_payment   = db.Column(db.Numeric(10, 2), default=0)
     months_to_freedom = db.Column(db.Integer)
     total_interest  = db.Column(db.Numeric(10, 2))
