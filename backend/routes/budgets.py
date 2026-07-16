@@ -28,8 +28,8 @@ def get_budgets(current_user):
             Transaction.user_id     == current_user.id,
             Transaction.category_id == b.category_id,
             Transaction.type        == 'expense',
-            func.month(Transaction.date) == b.month,
-            func.year(Transaction.date)  == b.year
+            func.extract('month', Transaction.date) == b.month,
+            func.extract('year', Transaction.date)  == b.year
         ).scalar() or 0
 
         entry = b.to_dict()

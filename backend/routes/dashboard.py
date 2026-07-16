@@ -23,16 +23,16 @@ def get_summary(current_user):
     total_income = db.session.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == uid,
         Transaction.type    == 'income',
-        func.month(Transaction.date) == month,
-        func.year(Transaction.date)  == year
+        func.extract('month', Transaction.date) == month,
+        func.extract('year', Transaction.date)  == year
     ).scalar() or 0
 
     # ── Total Expenses this month ──
     total_expenses = db.session.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == uid,
         Transaction.type    == 'expense',
-        func.month(Transaction.date) == month,
-        func.year(Transaction.date)  == year
+        func.extract('month', Transaction.date) == month,
+        func.extract('year', Transaction.date)  == year
     ).scalar() or 0
 
     net_savings = float(total_income) - float(total_expenses)
@@ -45,8 +45,8 @@ def get_summary(current_user):
      .filter(
         Transaction.user_id == uid,
         Transaction.type    == 'expense',
-        func.month(Transaction.date) == month,
-        func.year(Transaction.date)  == year
+        func.extract('month', Transaction.date) == month,
+        func.extract('year', Transaction.date)  == year
     ).group_by(Category.name).all()
 
     category_data = [
@@ -62,8 +62,8 @@ def get_summary(current_user):
             Transaction.user_id     == uid,
             Transaction.category_id == b.category_id,
             Transaction.type        == 'expense',
-            func.month(Transaction.date) == month,
-            func.year(Transaction.date)  == year
+            func.extract('month', Transaction.date) == month,
+            func.extract('year', Transaction.date)  == year
         ).scalar() or 0
 
         budget_vs_actual.append({
@@ -85,15 +85,15 @@ def get_summary(current_user):
         inc = db.session.query(func.sum(Transaction.amount)).filter(
             Transaction.user_id == uid,
             Transaction.type    == 'income',
-            func.month(Transaction.date) == m,
-            func.year(Transaction.date)  == y
+            func.extract('month', Transaction.date) == m,
+            func.extract('year', Transaction.date)  == y
         ).scalar() or 0
 
         exp = db.session.query(func.sum(Transaction.amount)).filter(
             Transaction.user_id == uid,
             Transaction.type    == 'expense',
-            func.month(Transaction.date) == m,
-            func.year(Transaction.date)  == y
+            func.extract('month', Transaction.date) == m,
+            func.extract('year', Transaction.date)  == y
         ).scalar() or 0
 
         trend.append({
